@@ -60,6 +60,7 @@ The following Habitica tasks are available as to-do lists in Home Assistant. You
 
 - **To-Do due dates calendar:** Lists the due dates for all active to-do tasks. Each event on this calendar represents a to-do item that has a set due date, making it easy to track upcoming deadlines and plan accordingly.
 - **Dailies calendar:** Displays all daily tasks that are scheduled for today and are still active. It also shows all tasks scheduled for future dates, helping you stay organized and track upcoming routines. The calendar sensor will be active if there are unfinished tasks for today and display the next due daily (based on sort order if there are multiple tasks due for that day).
+- **Reminders Calendar:** Combines reminders for both to-dos and daily tasks. This calendar creates reminder events based on the reminders you've set in Habitica. These reminders can be used in automations, such as sending notifications to other devices or being reminded in other ways, ensuring you never miss an important task.
 
 ## Button controls
 
