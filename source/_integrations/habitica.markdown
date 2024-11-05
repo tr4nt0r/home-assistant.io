@@ -2,8 +2,9 @@
 title: Habitica
 description: Instructions on enabling Habitica support for your Home Assistant
 ha_category:
-  - Hub
+  - To-do list
   - Sensor
+  - Calendar
 ha_release: 0.78
 ha_iot_class: Cloud Polling
 ha_domain: habitica
@@ -12,12 +13,22 @@ ha_platforms:
   - sensor
   - switch
   - todo
+  - calendar
 ha_codeowners:
   - '@ASMfreaK'
   - '@leikoilja'
   - '@tr4nt0r'
 ha_config_flow: true
 ha_integration_type: integration
+related:
+  - docs: /integrations/todo
+    title: To-do list integration documentation
+  - docs: /integrations/#to-do-list
+    title: List of to-do list integrations
+  - docs: /dashboards/todo-list/
+    title: To-do list card
+  - url: https://habitica.com/
+    title: Habitica
 ---
 
 The Habitca {% term integration %} enables you to monitor your adventurer's progress and stats in Home Assistant and seamlessly integrates your to-do's and daily tasks.
@@ -55,6 +66,11 @@ The following Habitica tasks are available as to-do lists in Home Assistant. You
 - **To-Do's:** Displays a comprehensive list of active and completed to-dos. Each to-do includes its due date if applicable, allowing you to check them off, edit them, delete them, and create new to-dos seamlessly.
 - **Dailies:** Shows the daily tasks that need to be completed today or in the future. Tasks completed yesterday can still be marked off as "yesterdailies" until a new day starts.
 
+## Calendars
+
+- **To-Do calendar:** Lists the due dates for all active to-do tasks. Each event on this calendar represents a to-do item that has a set due date, making it easy to track upcoming deadlines and plan accordingly.
+- **Dailies calendar:** Displays all daily tasks that are scheduled for today and are still active. It also shows all tasks scheduled for future dates, helping you stay organized and track upcoming routines. The calendar sensor will be active if there are unfinished tasks for today and display the next due daily (based on sort order if there are multiple tasks due for that day).
+
 ## Button controls
 
 - **Start my day:** Initiates daily routine actions in Habitica, including resetting your dailies, deal damage from unfinished dailies and quest bosses, habits adjustment, buff expiration, and mana regeneration based on completed dailies.
@@ -62,9 +78,37 @@ The following Habitica tasks are available as to-do lists in Home Assistant. You
 - **Buy a health potion:** Allows your character to purchase a health potion in Habitica. Instantly applies the potion upon purchase, healing 15 HP at a cost of 25 GP.
 - **Allocate all stat points**: Assigns all unallocated stat points based on the previously set automatic allocation method. If no method is set, all points are assigned to strength (STR).
 
+## Button controls for class skills
+
+If you've unlocked the class system, button controls for casting player and party skills will become available, depending on the class you've selected. For task skills see [action `habitica.cast_skill`](#action-habiticacast_skill)
+
+### Mage
+
+- **Ethereal surge**: You sacrifice Mana so the rest of your party, except for other mages, gains MP. (based on: INT)
+- **Earthquake**: Your mental power shakes the earth and buffs your party's intelligence. (based on: unbuffed INT)
+- **Chilling frost:** With one cast, ice freezes all your streaks so they won't reset to zero tomorrow.
+
+### Warrior
+
+- **Defensive stance**: You crouch low and gain a buff to constitution. (based on: unbuffed CON)
+- **Valorous presence**: Your boldness buffs your whole party's strength. (based on: unbuffed STR)
+- **Intimidating gaze:** Your fierce stare buffs your whole Party's constitution. (based on: unbuffed CON)
+
+### Rogue
+
+- **Tools of the trade**: Your tricky talents buff your whole party's perception. (based on: unbuffed PER)
+- **Stealth**: With each cast, a few of your undone dailies won't cause damage tonight. Their streaks and colors won't change. (based on: PER)
+
+### Healer
+
+- **Healing light**: Shining light restores your health. (based on: CON and INT)
+- **Searing brightness**: A burst of light makes your tasks more blue/less red. (based on: INT)
+- **Protective aura**: You shield your party by buffing their constitution. (based on: unbuffed CON)
+- **Blessing**: Your soothing spell restores your whole party's health. (based on: CON and INT)
+
 ## Switch controls
 
-- **Rest in the Inn:** When enabled, allows your character to rest in the inn in Habitica, pausing damage dealt from dailies and quest bosses.
+- **Rest in the Inn**: When enabled, allows your character to rest in the inn in Habitica, pausing damage dealt from dailies and quest bosses.
 
 ## Actions
 
@@ -152,6 +196,87 @@ Habitica tasks share a common set of details and configuration options, and as s
 | Data attribute | Optional  | Description                  |
 | -------------- | --------- | -----------------------------|
 | cost           | yes       | Update the cost of a reward. |
+
+## Automations
+
+Get started with these automation examples for Habitica, each featuring ready-to-use blueprints!
+
+### Create "Empty the dishwasher" to-do
+
+Automatically create a Habitica to-do when the dishwasher finishes its cycle.
+
+{% my blueprint_import badge blueprint_url="https://community.home-assistant.io/t/habitica-create-to-do-when-dishwasher-finishes-its-cycle/786625" %}
+
+{% details "Example YAML configuration" %}
+
+{% raw %}
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.dishwasher
+    from: "on"
+    to: "off"
+
+actions:
+  - action: todo.add_item
+    data:
+      item: "Empty the dishwasher 🥣🍽️"
+      due_date: "{{now().date()}}"
+      description: "Empty the clean dishes from the dishwasher and load any dirty dishes that are waiting."
+    target:
+      entity_id: todo.habitica_to_dos
+```
+
+{% endraw %}
+
+{% enddetails %}
+
+### Complete toothbrushing tasks on your Habitica Dailies list
+
+Automatically mark your morning and evening toothbrushing dailies as complete when your toothbrush usage is detected.
+
+{% my blueprint_import badge blueprint_url="https://community.home-assistant.io/t/habitica-complete-toothbrushing-tasks-on-your-habitica-dailies-list/786631" %}
+
+{% details "Example YAML configuration" %}
+
+```yaml
+triggers:
+  - trigger: state
+    entity_id: sensor.oralb_toothbrush_state
+    to: "running"
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 10 # Time delay for debouncing to avoid false triggers
+actions:
+  - choose:
+      - conditions:
+          - condition: time
+            after: "05:00:00"
+            before: "12:00:00"
+        sequence:
+          - action: todo.update_item
+            data:
+              item: "Brush your teeth in the morning 🪥"
+              status: completed
+            target:
+              entity_id: todo.habitica_dailies
+      - conditions: 
+          - condition: time
+            after: "18:00:00"
+            before: "23:59:00"
+        sequence:
+          - action: todo.update_item
+            data:
+              item: "Brush your teeth before bed 🪥"
+              status: completed
+            target:
+              entity_id: todo.habitica_dailies
+```
+
+{% enddetails %}
+
 
 ## API Service
 
