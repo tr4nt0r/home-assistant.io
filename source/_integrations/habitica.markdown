@@ -167,7 +167,7 @@ Habitica tasks share a common set of details and configuration options, and as s
 | clear_reminder         | yes      | Remove all reminders from a Habitica task.                                                                                                              |
 | streak                 | yes      | Adjust or reset the streak counter of the daily.                                                                                                        |
 
-#### Action `habita.update_todo`
+#### Action `habitica.update_todo`
 
 | Data attribute         | Optional  | Description                                                                                                       |
 | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
