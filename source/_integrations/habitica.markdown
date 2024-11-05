@@ -182,7 +182,7 @@ Habitica tasks share a common set of details and configuration options, and as s
 | remove_reminder        | yes       | Remove specific reminders from a Habitica task.                                                                   |
 | clear_reminder         | yes       | Remove all reminders from a Habitica task.                                                                        |
 
-#### Action `habita.update_habit`
+#### Action `habitica.update_habit`
 
 | Data attribute         | Optional  | Description                                                                                                       |
 | ---------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
