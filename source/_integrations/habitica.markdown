@@ -191,7 +191,7 @@ Habitica tasks share a common set of details and configuration options, and as s
 | counter_up             | yes       | Update the up counter of a positive habit.                                                                        |
 | counter_down           | yes       | Update the down counter of a negative habit.                                                                      |
 
-#### Action `habita.update_reward`
+#### Action `habitica.update_reward`
 
 | Data attribute | Optional  | Description                  |
 | -------------- | --------- | -----------------------------|
