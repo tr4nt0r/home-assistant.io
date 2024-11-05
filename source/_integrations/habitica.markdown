@@ -149,7 +149,7 @@ Habitica tasks share a common set of details and configuration options, and as s
 | remove_tag             | yes      | Remove tags from the Habitica task.                                                                                                                     |
 | alias                  | yes      | A task alias can be used instead of the name or task ID. Only dashes, underscores, and alphanumeric characters are supported. The task alias must be unique among all your tasks. |
 
-#### Action `habita.update_daily`
+#### Action `habitica.update_daily`
 
 | Data attribute         | Optional | Description                                                                                                                                             |
 | ---------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
