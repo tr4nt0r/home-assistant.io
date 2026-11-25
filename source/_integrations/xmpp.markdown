@@ -97,9 +97,9 @@ it will be set to the component's `title` configuration variable. To keep it emp
         message: "My funny or witty message"
 ```
 
-### Jabber image message
+### XMPP image message
 
-You can send images or files from locally stored files or remote web locations via Jabber's HTTP Upload feature.
+You can send images or files from locally stored files or remote web locations via XMPP's HTTP Upload feature.
 To send files and images, your XMPP server must support [XEP_0363](https://xmpp.org/extensions/xep-0363.html).
 
 {% note %}
@@ -139,7 +139,7 @@ Number 3 sends an image from a local path.
           path: "/home/homeassistant/super_view.jpg"
 ```
 
-### Jabber file message
+### XMPP file message
 
 
 Number 4 sends a text-file, retrieved from GitHub, renamed to `Hass_Cheatsheet.txt` to be viewable on a mobile Android device, as most don't offer any application to view `.md` files. Optionally you can add a timeout for the HTTP upload in seconds.
